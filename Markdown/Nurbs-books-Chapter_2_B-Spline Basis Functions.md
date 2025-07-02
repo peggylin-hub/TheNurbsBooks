@@ -1327,9 +1327,9 @@ We present the two algorithms which compute p \+ 1 functions before the two whic
 
 From P2.2 and the assumption that u  \[ui, ui+1), it follows that we can focus our attention on the functions Ni-p,p, ..., Ni,p and their derivatives; all other functions are identically zero, and it is wasteful to actually compute them. Hence, the first step in evaluation is to determine the knot span in which *u* lies. Either a linear or a binary search of the knot vector can be used; we present here a binary search. Since we are using intervals of the form u  \[ui, ui+1), a subtle problem in the evaluation of the basis functions is the special case u \= um. It is best to handle this at the lowest level by setting the span index to n (=m-p-1). Hence, in this case u  \[um-p-i, um-p). ***FindSpan*** is an integer function which returns the span index. 
 
-#### **Algorithm A2.1**
+**Algorithm A2.1**
 
-\`\`\`  
+```  
 FindSpan(n, p, u, U)  
 {   /\* Determine the knot span index \*/  
     /\* Input:  n, p, u, U          \*/  
@@ -1352,7 +1352,7 @@ FindSpan(n, p, u, U)
       
     return mid;  
 }  
-\`\`\`
+```
 
 ![][image1]  
 Figure 2.12. Nonuniform cubic basis functions defined on U \= {0,0,0,0,1,5,6,8, 8, 8, 8}. 
@@ -1361,12 +1361,12 @@ Now we tackle the second algorithm. Assuming *u* is in the *i*th span, computati
 ![][image2]
 
 Example  
-Ex2.3	Let p \= 2, U \= {0,0,0,1,2,3,4,4,5,5,5} and u \=52 (see Figure 2.6)  
+Ex2.3	Let p = 2, U = {0,0,0,1,2,3,4,4,5,5,5} and u =52 (see Figure 2.6)  
 	Then i \= 4, since u  \[u4, u5). Thus, we compute  
 ![][image3]
 
 Substituting u \=52  into Eq. (2.5) (the reader should to this) yields  
-$$ \\begin{align\*}  
+$$\begin{align\*}  
 N\_{4,0}\\left(\\frac{5}{2}\\right) &= 1 \\\\  
 N\_{3,1}\\left(\\frac{5}{2}\\right) &= \\frac{1}{2}, \\quad N\_{4,1}\\left(\\frac{5}{2}\\right) \= \\frac{1}{2} \\\\  
 N\_{2,2}\\left(\\frac{5}{2}\\right) &= \\frac{1}{8}, \\quad N\_{3,2}\\left(\\frac{5}{2}\\right) \= \\frac{6}{8}, \\quad N\_{4,2}\\left(\\frac{5}{2}\\right) \= \\frac{1}{8}  
@@ -1399,8 +1399,8 @@ $$N\_{i,2}(u) \= \\frac{\\text{left}\[1\]}{\\text{right}\[2\] \+ \\text{left}\[1
 
 Based on these observations, **Algorithm A2.2** computes all the nonvanishing basis functions and stores them in the array N\[0\], ..., N\[p\]
 
-**ALGORITHM A2.2**   
-\`\`\`  
+**ALGORITHM A2.2**
+```
 BasisFuns(i, u, p, U, N)  
 {  
     /\* Compute the nonvanishing basis functions \*/  
@@ -1424,7 +1424,7 @@ BasisFuns(i, u, p, U, N)
         N\[j\] \= saved;  
     }  
 }  
-\`\`\`
+```
 
 We remark that Algorithm A2.2 is not only efficient, but it also guarantees that there will be no division by zero, which can occur with a direct application of Eq. (2.5). 
 
@@ -1471,9 +1471,9 @@ Based on these observations (and Ex2.4), it is not difficult to develop Algorith
 
 The algorithm avoids division by zero and/or the use of terms not in the array **ndu\[ \]\[ \]**. 
 
-##### **ALGORITHM A2.3** 
+**ALGORITHM A2.3** 
 
-\`\`\`  
+```
 DersBasisFuns (i,u,p,n,U,ders)   
 { /\* Compute nonzero basis functions and their \*/  
 /\* derivatives. First section is A2.2 modified \*/   
@@ -1499,7 +1499,7 @@ for (j=1; j\<=p; j++)
 
     ndu\[j\]\[j\] \= saved;  
 }  
-\`\`\`
+```
 
 We turn our attention now to the last two algorithms, namely computing a single basis function, Ni,p(u), or the derivatives, $$N^{(k)}\_{i,p}\\left(u\\right)$$, of a single basis function. The solutions to these problems result in triangular tables of the form   
 ![][image6]
@@ -1511,9 +1511,9 @@ N4,2(52) is obtained from
 ![][image8]  
 Notice that the position and relative number of nonzero entries in the table depend on *p* and on the position of the 1 in the first column. Algorithm A2.4 computes only the nonzero entries. The value Ni,p(u) is returned in Nip; m is the high index of *U (m \+ 1 knots)*. The algorithm is similar to Algorithm A2.2 in its use of the variables temp and saved. 
 
-##### **ALGORITHM A2.4** 
+**ALGORITHM A2.4** 
 
-\`\`\`  
+```
 OneBasisFun( p, m, U, i, u, Nip)  
 {  
     /\* Compute the basis function Nip \*/  
@@ -1566,7 +1566,7 @@ OneBasisFun( p, m, U, i, u, Nip)
 
     Nip \= N\[0\];  
 }  
-\`\`\`
+```
 
 Now for fixed *i*, the computation of the derivatives, $$N\_{i,p}^{(k)}(u)$$, for k \= 0, ..., n, n≤p, uses Eq. (2.9). For example, if p \= 3 and n \= 3, then
 
@@ -1585,10 +1585,9 @@ In words, the algorithm is:
 
 Algorithm A2.5 computes $$N\_{i,p}^{(k)}(u)$$ for k \= 0, ..., n, n p. The *k*th derivative is returned in ders \[k\]. 
 
-##### **ALGORITHM A2.5** 
+**ALGORITHM A2.5** 
 
-##### **\`\`\`**
-
+```
 DersOneBasisFun (p,m,U,i,u,n,ders)   
 {  
     /\* Compute derivatives of basis function Nip \*/  
@@ -1675,7 +1674,7 @@ DersOneBasisFun (p,m,U,i,u,n,ders)
         ders\[k\] \= ND\[0\];  // kth derivative  
     }  
 }  
-\`\`\`
+```
 
 Finally, note that Algorithms A2.3 and A2.5 compute derivatives from the right if u is a knot. However, Eqs. (2.5), (2.9), (2.10), and others in this chapter could have been defined using intervals of the form u  \[ui, ui+1). This would not change Algorithms A2.2 through A2.5. In other words, derivatives from the left can be found by simply having the span-finding algorithm use intervals of the form (ui, ui+1\], instead of \[ui, ui+1). In the preceding example, with p \= 2 and U \= {0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5}, if u \= 2  then span i \= 3 yields derivatives from the left, and i \= 4 yields derivatives from the right. 
 
