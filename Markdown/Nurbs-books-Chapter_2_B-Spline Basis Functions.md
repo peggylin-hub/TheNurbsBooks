@@ -1370,25 +1370,22 @@ $$ \\begin{align\*}
 N\_{4,0}\\left(\\frac{5}{2}\\right) &= 1 \\\\  
 N\_{3,1}\\left(\\frac{5}{2}\\right) &= \\frac{1}{2}, \\quad N\_{4,1}\\left(\\frac{5}{2}\\right) \= \\frac{1}{2} \\\\  
 N\_{2,2}\\left(\\frac{5}{2}\\right) &= \\frac{1}{8}, \\quad N\_{3,2}\\left(\\frac{5}{2}\\right) \= \\frac{6}{8}, \\quad N\_{4,2}\\left(\\frac{5}{2}\\right) \= \\frac{1}{8}  
-\\end{align\*}
+\\end{align\*}$$
 
-$$  
 Notice that for fixed degree the functions sum to 1 (P2.4). 
 
 It will be clear to the reader who carried out the substitutions in this example that there is a great deal of redundant computation inherent in Eq. (2.5). For example, writing out the second-degree functions in general terms, we have 
 
-$$ \\begin{align}  
+$$\\begin{align}  
 N\_{i-2,2}(u) &= \\frac{u \- u\_{i-2}}{u\_i \- u\_{i-2}} N\_{i-2,1}(u) \+ \\frac{u\_{i+1} \- u}{u\_{i+1} \- u\_{i-1}} N\_{i-1,1}(u) \\tag{2.14} \\\\  
 N\_{i-1,2}(u) &= \\frac{u \- u\_{i-1}}{u\_{i+1} \- u\_{i-1}} N\_{i-1,1}(u) \+ \\frac{u\_{i+2} \- u}{u\_{i+2} \- u\_i} N\_{i,1}(u) \\tag{2.15} \\\\  
 N\_{i,2}(u)   &= \\frac{u \- u\_i}{u\_{i+2} \- u\_i} N\_{i,1}(u) \+ \\frac{u\_{i+3} \- u}{u\_{i+3} \- u\_{i+1}} N\_{i+1,1}(u) \\tag{2.16}  
-\\end{align}  
-$$
+\\end{align}$$
 
 Note that 
 
 * the first term of Eq. (2.14) and the last term of Eq. (2.16) are not computed, since Ni-2,1(u) \= Ni+1,1(u) \= 0;   
-* the expression   
-  $$ \\frac{N\_{i-1,1}(u)}{u\_{i+1} \- u\_{i-1}}$$
+* the expression $$\\frac{N\_{i-1,1}(u)}{u\_{i+1} \- u\_{i-1}}$$
 
   which appears in the second term of Eq. (2.14) appears in the first term of Eq. (2.15); a similar statement holds for the second term of Eq. (2.15) and the first term of Eq. (2.16). 
 
@@ -1396,9 +1393,9 @@ We introduce the notation
 $$\\text{left}\[j\] \= u \- u\_{i+1-j} \\qquad \\text{right}\[j\] \= u\_{i+j} \- u $$
 
 Equations (2.14)-(2.16) are then   
-$$ N\_{i-2,2}(u) \= \\frac{\\text{left}\[3\]}{\\text{right}\[0\] \+ \\text{left}\[3\]} N\_{i-2,1}(u) \+ \\frac{\\text{right}\[1\]}{\\text{right}\[1\] \+ \\text{left}\[2\]} N\_{i-1,1}(u) $$  
-$$ N\_{i-1,2}(u) \= \\frac{\\text{left}\[2\]}{\\text{right}\[1\] \+ \\text{left}\[2\]} N\_{i-1,1}(u) \+ \\frac{\\text{right}\[2\]}{\\text{right}\[2\] \+ \\text{left}\[1\]} N\_{i,1}(u) $$  
-$$ N\_{i,2}(u) \= \\frac{\\text{left}\[1\]}{\\text{right}\[2\] \+ \\text{left}\[1\]} N\_{i,1}(u) \+ \\frac{\\text{right}\[3\]}{\\text{right}\[3\] \+ \\text{left}\[0\]} N\_{i+1,1}(u) $$
+$$N\_{i-2,2}(u) \= \\frac{\\text{left}\[3\]}{\\text{right}\[0\] \+ \\text{left}\[3\]} N\_{i-2,1}(u) \+ \\frac{\\text{right}\[1\]}{\\text{right}\[1\] \+ \\text{left}\[2\]} N\_{i-1,1}(u)$$  
+$$N\_{i-1,2}(u) \= \\frac{\\text{left}\[2\]}{\\text{right}\[1\] \+ \\text{left}\[2\]} N\_{i-1,1}(u) \+ \\frac{\\text{right}\[2\]}{\\text{right}\[2\] \+ \\text{left}\[1\]} N\_{i,1}(u)$$  
+$$N\_{i,2}(u) \= \\frac{\\text{left}\[1\]}{\\text{right}\[2\] \+ \\text{left}\[1\]} N\_{i,1}(u) \+ \\frac{\\text{right}\[3\]}{\\text{right}\[3\] \+ \\text{left}\[0\]} N\_{i+1,1}(u)$$
 
 Based on these observations, **Algorithm A2.2** computes all the nonvanishing basis functions and stores them in the array N\[0\], ..., N\[p\]
 
