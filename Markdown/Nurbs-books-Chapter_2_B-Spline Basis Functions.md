@@ -1329,8 +1329,30 @@ From P2.2 and the assumption that u  \[ui, ui+1), it follows that we can focus o
 
 #### **Algorithm A2.1**
 
-| int FindSpan(n, p, u, U){   /\* Determine the knot span index \*/    /\* Input:  n, p, u, U          \*/    /\* Return: the knot span index \*/    if (u \== U\[n+1\]) return n;  /\* Special case */        int low \= p;    int high \= n \+ 1;* /\* Do binary search \*/    int mid \= (low \+ high) / 2;    while (u \< U\[mid\] || u \>= U\[mid+1\])    {        if (u \< U\[mid\])            high \= mid;        else            low \= mid;        mid \= (low \+ high) / 2;    }        return mid;} |
-| :---- |
+\`\`\`  
+FindSpan(n, p, u, U)  
+{   /\* Determine the knot span index \*/  
+    /\* Input:  n, p, u, U          \*/  
+    /\* Return: the knot span index \*/
+
+    if (u \== U\[n+1\]) return n;  /\* Special case /  
+      
+    int low \= p;  
+    int high \= n \+ 1; /\* Do binary search \*/  
+    int mid \= (low \+ high) / 2;
+
+    while (u \< U\[mid\] || u \>= U\[mid+1\])  
+    {  
+        if (u \< U\[mid\])  
+            high \= mid;  
+        else  
+            low \= mid;  
+        mid \= (low \+ high) / 2;  
+    }  
+      
+    return mid;  
+}  
+\`\`\`
 
 ![][image1]  
 Figure 2.12. Nonuniform cubic basis functions defined on U \= {0,0,0,0,1,5,6,8, 8, 8, 8}. 
@@ -1380,10 +1402,32 @@ $$ N\_{i,2}(u) \= \\frac{\\text{left}\[1\]}{\\text{right}\[2\] \+ \\text{left}\[
 
 Based on these observations, **Algorithm A2.2** computes all the nonvanishing basis functions and stores them in the array N\[0\], ..., N\[p\]
 
-**ALGORITHM A2.2** 
+**ALGORITHM A2.2**   
+\`\`\`  
+BasisFuns(i, u, p, U, N)  
+{  
+    /\* Compute the nonvanishing basis functions \*/  
+    /\* Input:  i, u, p, U       \*/  
+    /\* Output: N                \*/
 
-| BasisFuns(i, u, p, U, N){    /\* Compute the nonvanishing basis functions \*/    /\* Input:  i, u, p, U       \*/    /\* Output: N                \*/    N\[0\] \= 1.0;    for (int j \= 1; j \<= p; j++)    {        left\[j\]  \= u \- U\[i \+ 1 \- j\];        right\[j\] \= U\[i \+ j\] \- u;        saved \= 0.0;        for (int r \= 0; r \< j; r++)        {            temp \= N\[r\] / (right\[r \+ 1\] \+ left\[j \- r\]);            N\[r\] \= saved \+ right\[r \+ 1\] \* temp;            saved \= left\[j \- r\] \* temp;        }        N\[j\] \= saved;    }} |
-| :---- |
+    N\[0\] \= 1.0;  
+    for (int j \= 1; j \<= p; j++)  
+    {  
+        left\[j\]  \= u \- U\[i \+ 1 \- j\];  
+        right\[j\] \= U\[i \+ j\] \- u;  
+        saved \= 0.0;
+
+        for (int r \= 0; r \< j; r++)  
+        {  
+            temp \= N\[r\] / (right\[r \+ 1\] \+ left\[j \- r\]);  
+            N\[r\] \= saved \+ right\[r \+ 1\] \* temp;  
+            saved \= left\[j \- r\] \* temp;  
+        }
+
+        N\[j\] \= saved;  
+    }  
+}  
+\`\`\`
 
 We remark that Algorithm A2.2 is not only efficient, but it also guarantees that there will be no division by zero, which can occur with a direct application of Eq. (2.5). 
 
@@ -1430,10 +1474,35 @@ Based on these observations (and Ex2.4), it is not difficult to develop Algorith
 
 The algorithm avoids division by zero and/or the use of terms not in the array **ndu\[ \]\[ \]**. 
 
-ALGORITHM A2.3 
+##### **ALGORITHM A2.3** 
 
-| DersBasisFuns (i,u,p,n,U,ders) { /\* Compute nonzero basis functions and their \*//\* derivatives. First section is A2.2 modified \*/ /\* to store functions and knot differences.  \*/ /\* Input: i,u,p,n,U \*/ /\* Output: ders \*/ ndu \[0\] \[0\]=1.0; for (j=1; j\<=p; j++) {     left\[j\]  \= u \- U\[i \+ 1 \- j\];    right\[j\] \= U\[i \+ j\] \- u;    saved \= 0.0;    for (r \= 0; r \< j; r++)    {						 /\* Lower triangle \*/        ndu\[j\]\[r\] \= right\[r \+ 1\] \+ left\[j \- r\];                temp \= ndu\[r\]\[j \- 1\] / ndu\[j\]\[r\];						 /\* Upper triangle \*/        ndu\[r\]\[j\] \= saved \+ right\[r \+ 1\] \* temp;                      saved \= left\[j \- r\] \* temp;    }    ndu\[j\]\[j\] \= saved;} |
-| :---- |
+\`\`\`  
+DersBasisFuns (i,u,p,n,U,ders)   
+{ /\* Compute nonzero basis functions and their \*/  
+/\* derivatives. First section is A2.2 modified \*/   
+/\* to store functions and knot differences.  \*/   
+/\* Input: i,u,p,n,U \*/   
+/\* Output: ders \*/   
+ndu \[0\] \[0\]=1.0;   
+for (j=1; j\<=p; j++)   
+{   
+    left\[j\]  \= u \- U\[i \+ 1 \- j\];  
+    right\[j\] \= U\[i \+ j\] \- u;  
+    saved \= 0.0;
+
+    for (r \= 0; r \< j; r++)  
+    {						 /\* Lower triangle \*/  
+        ndu\[j\]\[r\] \= right\[r \+ 1\] \+ left\[j \- r\];          
+        temp \= ndu\[r\]\[j \- 1\] / ndu\[j\]\[r\];  
+						 /\* Upper triangle \*/
+
+        ndu\[r\]\[j\] \= saved \+ right\[r \+ 1\] \* temp;                
+        saved \= left\[j \- r\] \* temp;  
+    }
+
+    ndu\[j\]\[j\] \= saved;  
+}  
+\`\`\`
 
 We turn our attention now to the last two algorithms, namely computing a single basis function, Ni,p(u), or the derivatives, $$N^{(k)}\_{i,p}\\left(u\\right)$$, of a single basis function. The solutions to these problems result in triangular tables of the form   
 ![][image6]
@@ -1447,8 +1516,60 @@ Notice that the position and relative number of nonzero entries in the table dep
 
 ##### **ALGORITHM A2.4** 
 
-| OneBasisFun( p, m, U, i, u, Nip){    /\* Compute the basis function Nip \*/    /\* Input:  p, m, U, i, u \*/    /\* Output: Nip \*/    if ((i \== 0 && u \== U\[0\]) ||             /\* Special \*/        (i \== m \- p \- 1 && u \== U\[m\]))       /\* cases \*/    {        Nip \= 1.0;        return;    }    if (u \< U\[i\] || u \>= U\[i \+ p \+ 1\])       /\* Local property \*/    {        Nip \= 0.0;        return;    }    for (j \= 0; j \<= p; j++)             /\* Initialize zeroth-degree functs \*/    {        if (u \>= U\[i \+ j\] && u \< U\[i \+ j \+ 1\])            N\[j\] \= 1.0;        else            N\[j\] \= 0.0;    }    for (int k \= 1; k \<= p; k++)             /\* Compute triangular table \*/    {        if (N\[0\] \== 0.0) saved \= 0.0;        else saved \= ((u \- U\[i\]) \* N\[0\]) / (U\[i \+ k\] \- U\[i\]);        for ( j \= 0; j \< p \- k \+ 1; j++)        {            Uleft  \= U\[i \+ j \+ 1\];            Uright \= U\[i \+ j \+ k \+ 1\];            if (N\[j \+ 1\] \== 0.0)            {                N\[j\] \= saved;  saved \= 0.0;            }            else            {                temp \= N\[j \+ 1\] / (Uright \- Uleft);                N\[j\] \= saved \+ (Uright \- u) \* temp;                saved \= (u \- Uleft) \* temp;            }        }    }    Nip \= N\[0\];} |
-| :---- |
+\`\`\`  
+OneBasisFun( p, m, U, i, u, Nip)  
+{  
+    /\* Compute the basis function Nip \*/  
+    /\* Input:  p, m, U, i, u \*/  
+    /\* Output: Nip \*/
+
+    if ((i \== 0 && u \== U\[0\]) ||             /\* Special \*/  
+        (i \== m \- p \- 1 && u \== U\[m\]))       /\* cases \*/  
+    {  
+        Nip \= 1.0;  
+        return;  
+    }
+
+    if (u \< U\[i\] || u \>= U\[i \+ p \+ 1\])       /\* Local property \*/  
+    {  
+        Nip \= 0.0;  
+        return;  
+    }
+
+    for (j \= 0; j \<= p; j++)             /\* Initialize zeroth-degree functs \*/  
+    {  
+        if (u \>= U\[i \+ j\] && u \< U\[i \+ j \+ 1\])  
+            N\[j\] \= 1.0;  
+        else  
+            N\[j\] \= 0.0;  
+    }
+
+    for (int k \= 1; k \<= p; k++)             /\* Compute triangular table \*/  
+    {  
+        if (N\[0\] \== 0.0) saved \= 0.0;  
+        else saved \= ((u \- U\[i\]) \* N\[0\]) / (U\[i \+ k\] \- U\[i\]);
+
+        for ( j \= 0; j \< p \- k \+ 1; j++)  
+        {  
+            Uleft  \= U\[i \+ j \+ 1\];  
+            Uright \= U\[i \+ j \+ k \+ 1\];
+
+            if (N\[j \+ 1\] \== 0.0)  
+            {  
+                N\[j\] \= saved;  saved \= 0.0;  
+            }  
+            else  
+            {  
+                temp \= N\[j \+ 1\] / (Uright \- Uleft);  
+                N\[j\] \= saved \+ (Uright \- u) \* temp;  
+                saved \= (u \- Uleft) \* temp;  
+            }  
+        }  
+    }
+
+    Nip \= N\[0\];  
+}  
+\`\`\`
 
 Now for fixed *i*, the computation of the derivatives, $$N\_{i,p}^{(k)}(u)$$, for k \= 0, ..., n, n≤p, uses Eq. (2.9). For example, if p \= 3 and n \= 3, then
 
@@ -1469,8 +1590,95 @@ Algorithm A2.5 computes $$N\_{i,p}^{(k)}(u)$$ for k \= 0, ..., n, n p. The *k*th
 
 ##### **ALGORITHM A2.5** 
 
-| DersOneBasisFun (p,m,U,i,u,n,ders) {    /\* Compute derivatives of basis function Nip \*/    /\* Input:  p, m, U, i, u, n \*/    /\* Output: ders \*/    if (u \< U\[i\] || u \>= U\[i \+ p \+ 1\])  // Local property    {        for (k \= 0; k \<= n; k++)            ders\[k\] \= 0.0;        return;    }    // Initialize zeroth-degree basis functions    for ( j \= 0; j \<= p; j++)    {        if (u \>= U\[i \+ j\] && u \< U\[i \+ j \+ 1\])            N\[j\]\[0\] \= 1.0;        else            N\[j\]\[0\] \= 0.0;    }    // Compute full triangular table    for (k \= 1; k \<= p; k++)    {        if (N\[0\]\[k \- 1\] \== 0.0)            saved \= 0.0;        else            saved \= ((u \- U\[i\]) \* N\[0\]\[k \- 1\]) / (U\[i \+ k\] \- U\[i\]);        for (int j \= 0; j \< p \- k \+ 1; j++)        {            Uleft \= U\[i \+ j \+ 1\];            Uright \= U\[i \+ j \+ k \+ 1\];            if (N\[j \+ 1\]\[k \- 1\] \== 0.0)            {                N\[j\]\[k\] \= saved;                saved \= 0.0;            }            else            {                temp \= N\[j \+ 1\]\[k \- 1\] / (Uright \- Uleft);                N\[j\]\[k\] \= saved \+ (Uright \- u) \* temp;                saved \= (u \- Uleft) \* temp;            }        }    }    ders\[0\] \= N\[0\]\[p\];  // The function value    // Compute derivatives    for (k \= 1; k \<= n; k++)    {        for (j \= 0; j \<= k; j++)  // Load column            ND\[j\] \= N\[j\]\[p \- k\];        for (jj \= 1; jj \<= k; jj++)  // Compute table of width k        {            if (ND\[0\] \== 0.0)                saved \= 0.0;            else                saved \= ND\[0\] / (U\[i \+ p \- k \+ jj\] \- U\[i\]);            for (j \= 0; j \< k \- jj \+ 1; j++)            {                Uleft \= U\[i \+ j \+ 1\];                Uright \= U\[i \+ j \+ p \- k \+ jj \+ 1\];                if (ND\[j \+ 1\] \== 0.0)                {                    ND\[j\] \= (p \- k \+ jj) \* saved;                    saved \= 0.0;                }                else                {                    temp \= ND\[j \+ 1\] / (Uright \- Uleft);                    ND\[j\] \= (p \- k \+ jj) \* (saved \- temp);                    saved \= temp;                }            }        }        ders\[k\] \= ND\[0\];  // kth derivative    }} |
-| :---- |
+##### **\`\`\`**
+
+DersOneBasisFun (p,m,U,i,u,n,ders)   
+{  
+    /\* Compute derivatives of basis function Nip \*/  
+    /\* Input:  p, m, U, i, u, n \*/  
+    /\* Output: ders \*/
+
+    if (u \< U\[i\] || u \>= U\[i \+ p \+ 1\])  // Local property  
+    {  
+        for (k \= 0; k \<= n; k++)  
+            ders\[k\] \= 0.0;  
+        return;  
+    }
+
+    // Initialize zeroth-degree basis functions  
+    for ( j \= 0; j \<= p; j++)  
+    {  
+        if (u \>= U\[i \+ j\] && u \< U\[i \+ j \+ 1\])  
+            N\[j\]\[0\] \= 1.0;  
+        else  
+            N\[j\]\[0\] \= 0.0;  
+    }
+
+    // Compute full triangular table  
+    for (k \= 1; k \<= p; k++)  
+    {  
+        if (N\[0\]\[k \- 1\] \== 0.0)  
+            saved \= 0.0;  
+        else  
+            saved \= ((u \- U\[i\]) \* N\[0\]\[k \- 1\]) / (U\[i \+ k\] \- U\[i\]);
+
+        for (int j \= 0; j \< p \- k \+ 1; j++)  
+        {  
+            Uleft \= U\[i \+ j \+ 1\];  
+            Uright \= U\[i \+ j \+ k \+ 1\];
+
+            if (N\[j \+ 1\]\[k \- 1\] \== 0.0)  
+            {  
+                N\[j\]\[k\] \= saved;  
+                saved \= 0.0;  
+            }  
+            else  
+            {  
+                temp \= N\[j \+ 1\]\[k \- 1\] / (Uright \- Uleft);  
+                N\[j\]\[k\] \= saved \+ (Uright \- u) \* temp;  
+                saved \= (u \- Uleft) \* temp;  
+            }  
+        }  
+    }
+
+    ders\[0\] \= N\[0\]\[p\];  // The function value
+
+    // Compute derivatives  
+    for (k \= 1; k \<= n; k++)  
+    {  
+        for (j \= 0; j \<= k; j++)  // Load column  
+            ND\[j\] \= N\[j\]\[p \- k\];
+
+        for (jj \= 1; jj \<= k; jj++)  // Compute table of width k  
+        {  
+            if (ND\[0\] \== 0.0)  
+                saved \= 0.0;  
+            else  
+                saved \= ND\[0\] / (U\[i \+ p \- k \+ jj\] \- U\[i\]);
+
+            for (j \= 0; j \< k \- jj \+ 1; j++)  
+            {  
+                Uleft \= U\[i \+ j \+ 1\];  
+                Uright \= U\[i \+ j \+ p \- k \+ jj \+ 1\];
+
+                if (ND\[j \+ 1\] \== 0.0)  
+                {  
+                    ND\[j\] \= (p \- k \+ jj) \* saved;  
+                    saved \= 0.0;  
+                }  
+                else  
+                {  
+                    temp \= ND\[j \+ 1\] / (Uright \- Uleft);  
+                    ND\[j\] \= (p \- k \+ jj) \* (saved \- temp);  
+                    saved \= temp;  
+                }  
+            }  
+        }
+
+        ders\[k\] \= ND\[0\];  // kth derivative  
+    }  
+}  
+\`\`\`
 
 Finally, note that Algorithms A2.3 and A2.5 compute derivatives from the right if u is a knot. However, Eqs. (2.5), (2.9), (2.10), and others in this chapter could have been defined using intervals of the form u  \[ui, ui+1). This would not change Algorithms A2.2 through A2.5. In other words, derivatives from the left can be found by simply having the span-finding algorithm use intervals of the form (ui, ui+1\], instead of \[ui, ui+1). In the preceding example, with p \= 2 and U \= {0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5}, if u \= 2  then span i \= 3 yields derivatives from the left, and i \= 4 yields derivatives from the right. 
 
